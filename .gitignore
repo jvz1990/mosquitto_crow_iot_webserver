@@ -1,3 +1,11 @@
+<<<<<<< HEAD
+=======
+build/
+*.o
+.vscode
+CMakeUserPresets.json
+
+>>>>>>> master
 # Prerequisites
 *.d
 
@@ -29,4 +37,8 @@
 # Executables
 *.exe
 *.out
+<<<<<<< HEAD
 *.app
+=======
+*.app
+>>>>>>> master

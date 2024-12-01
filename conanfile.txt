@@ -1,0 +1,9 @@
+[requires]
+fmt/9.1.0  # Example dependency for modern C++ formatting
+
+[generators]
+CMakeToolchain
+CMakeDeps
+
+[layout]
+cmake_layout
