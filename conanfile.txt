@@ -1,6 +1,7 @@
 [requires]
 fmt/11.0.2
 crowcpp-crow/1.2.0
+mosquitto/2.0.18
 
 [generators]
 CMakeToolchain
