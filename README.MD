@@ -1,5 +1,3 @@
-modify `cpp_boilerplate` in CMakeLists.txt to your project.
-
 Conan commands to get started:
 
 ```

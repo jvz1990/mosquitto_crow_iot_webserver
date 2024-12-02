@@ -1,5 +1,6 @@
 [requires]
-fmt/9.1.0  # Example dependency for modern C++ formatting
+fmt/11.0.2
+crowcpp-crow/1.2.0
 
 [generators]
 CMakeToolchain
