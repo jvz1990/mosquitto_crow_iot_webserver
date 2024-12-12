@@ -1,41 +1,44 @@
-#include "MQTTClient.h"
-#include <crow.h>
+#include <csignal>
+#include <fmt/core.h>
+
+#include "app.h"
+
+crowiot::App app;
+
+void signalHandler(int signal) {
+  app.stopServices();
+  std::exit(signal);
+}
+
+void setupSignalHandlers() {
+  struct sigaction sa;
+  sa.sa_handler = signalHandler;
+  sa.sa_flags = SA_RESTART | SA_SIGINFO;
+  sigemptyset(&sa.sa_mask);
+
+  int signals[] = {SIGHUP,  SIGINT,  SIGQUIT, SIGILL,    SIGABRT, SIGFPE,
+                   SIGSEGV, SIGPIPE, SIGALRM, SIGTERM,   SIGUSR1, SIGUSR2,
+                   SIGCHLD, SIGCONT, SIGTSTP, SIGTTIN,   SIGTTOU, SIGBUS,
+                   SIGPOLL, SIGPROF, SIGSYS,  SIGTRAP,   SIGURG,  SIGVTALRM,
+                   SIGXCPU, SIGXFSZ, SIGIOT,  SIGSTKFLT, SIGIO,   SIGPWR};
+
+  for (int sig : signals) {
+    sigaction(sig, &sa, nullptr);
+  }
+}
 
 int main() {
-    // Initialize Mosquitto library
-    mosqpp::lib_init();
+  app.startServices();
 
-    // Create MQTT client
-    MQTTClient mqttClient("CrowMQTTClient", "localhost", 1883);
+  std::this_thread::sleep_for(std::chrono::seconds(5));
 
-    // Initialize Crow server
-    crow::SimpleApp app;
+  setupSignalHandlers();
 
-    // Route for the home page
-    CROW_ROUTE(app, "/")
-    ([]() {
-        return "<html>"
-               "<body>"
-               "<h1>MQTT Publisher</h1>"
-               "<button onclick=\"fetch('/publish')\">Publish to MQTT</button>"
-               "</body>"
-               "</html>";
-    });
+  while (app.isAppRunning()) {
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+  }
 
-    // Route to publish to MQTT topic
-    CROW_ROUTE(app, "/publish")
-    ([&mqttClient]() {
-        if (mqttClient.publish_message("example/topic", "Hello from Crow!")) {
-            return "Message published successfully!";
-        } else {
-            return "Failed to publish message.";
-        }
-    });
+  app.stopServices();
 
-    // Start the server
-    app.port(18080).multithreaded().run();
-
-    // Clean up Mosquitto library
-    mosqpp::lib_cleanup();
-    return 0;
+  return 0;
 }

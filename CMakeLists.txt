@@ -21,6 +21,7 @@ pkg_check_modules(MOSQUITTO REQUIRED libmosquitto)
 set(SOURCES
     src/main.cpp
     src/MQTTClient.cpp
+    src/app.cpp
 )
 
 # Include directories for header files
